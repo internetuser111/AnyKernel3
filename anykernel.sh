@@ -35,6 +35,18 @@ ramdisk_compression=auto;
 set_perm_recursive 0 0 755 644 $ramdisk/*;
 set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
 
+# select the correct image to flash
+fstype="$(mount | grep -wom1 sdcardfs)"
+case $fstype in
+    sdcardfs)
+	os="sdcardfs"
+	;;
+    *)
+	os="non-sdcardfs"
+	;;
+esac
+ui_print " " "You are on a $os ROM!";
+mv $home/kernels/$os/Image.gz-dtb $home/Image.gz-dtb;
 
 ## AnyKernel boot install
 dump_boot;
